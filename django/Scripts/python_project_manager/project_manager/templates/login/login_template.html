@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load static %}
+<html>
+    <head>
+		<link href="{% static 'css/bootstrap-fluid-adj.css' %}" rel="stylesheet">
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+		<link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+		
+        <title>Login</title>
+    </head>
+
+    <body>
+	<div class="hero-unit">
+        <h1>{% trans "Login to Project Manager" %}</h1>
+		<br />
+		<div class="container">
+			<form class="form-signin span4" id="login_form" method="post" action="/login/">
+				<h2 class="form-signin-heading">{% trans "Please sign in" %}</h2>
+				{% csrf_token %}
+				{% trans "Username" %}: <input type="text" class="input-block-level" placeholder="Username" name="username" value="" size="50" />
+				<br />
+				{% trans "Password" %}: <input type="password" class="input-block-level" placeholder="Password" name="password" value="" size="50" />
+				<br />
+				{% if messages %}
+				{% for message in messages %}
+				<p {% if message.tags %} class="alert alert-{{message.tags}}"{% endif %}>{{ message }}</p>
+				{% endfor %}
+				{% endif %}
+				<br />
+				<input class="btn btn-primary row" type="submit" value={% trans "Login" %}>
+			</form>
+		</div>
+		<h5 align="center">{% trans "Not registered? " %} <a href="/register/">{% trans "Register Here!" %}</a></h5>
+	</div>
+    </body>
+</html>

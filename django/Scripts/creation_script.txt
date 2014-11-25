@@ -1,0 +1,3 @@
+create user guest@localhost;
+create database guest_db;
+grant all on guest_db.* to guest@localhost;
