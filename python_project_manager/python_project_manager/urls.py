@@ -6,13 +6,14 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'new_site.views.home', name='home'),
+    # url(r'^$', 'project_manager.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^new_project/$', 'project_manager.views.project_create'),
 	url(r'^register/$', 'project_manager.views.register'),
 	url(r'^login/$', 'project_manager.views.user_login'),
+	url(r'^logout/$', 'project_manager.views.user_logout'),
 	url(r'^main/$', 'project_manager.views.main_page'),
 )
 

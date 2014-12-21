@@ -15,7 +15,7 @@
 		  <div class="container-fluid">
 			<div class="navbar-header">
 			  <a class="navbar-brand" href="#">
-				<img src="{{user.userprofile.picture.url}}" alt="User Icon" width="100px" height="200px">
+				{% comment %}<img src="{{user.userprofile.picture.url}}" alt="User Icon" width="100px" height="200px">{% endcomment %}
 			  </a>
 			  <h2><small>{% trans "Hello" %},</small> {{ user }}</h2>
 			</div>
