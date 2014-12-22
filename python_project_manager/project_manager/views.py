@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 
-from project_manager.models import Project, User, UserProfile
+from project_manager.models import Project, User, UserProfile, UserRole
 from project_manager.forms import ProjectForm, UserForm, UserProfileForm
 
 @login_required()
@@ -16,13 +16,14 @@ def home(request):
 	context = RequestContext(request)
 	projects = Project.objects.all().filter(owner = request.user.username)
 
-	return render_to_response('home/home.html', {'projects': projects}, context)
+	return render_to_response('login/login_template.html', {'projects': projects}, context)
 
 @login_required()
 def main_page(request):
 	"""Represents some user profile data and user abilities."""
 	context = RequestContext(request)
-	return render_to_response('main/main_template.html', {}, context)
+	projects = UserRole.objects.all().filter(user = request.user)
+	return render_to_response('main/main_template.html', {'projects': projects}, context)
 
 def user_login(request):
 	"""Represents a user login page."""
@@ -67,12 +68,14 @@ def project_create(request):
 
 	if request.method == 'POST':
 		project_form = ProjectForm(data=request.POST)
-		
 		if project_form.is_valid():
 			project = project_form.save()
 			project.owner = request.user.username
 			project.save()
-			
+
+			user_role = UserRole(user = request.user, role = 'owner', project = project)
+			user_role.save()
+
 			messages.info(request, "Project created!")
 			return HttpResponseRedirect('/main/')
 		else:
