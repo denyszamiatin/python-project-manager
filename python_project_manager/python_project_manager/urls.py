@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 	url(r'^login/$', 'project_manager.views.user_login'),
 	url(r'^logout/$', 'project_manager.views.user_logout'),
 	url(r'^main/$', 'project_manager.views.main_page'),
+	url(r'^projects/project(?P<id>\d+)/$', 'project_manager.views.project'),
 )
 
 if settings.DEBUG:

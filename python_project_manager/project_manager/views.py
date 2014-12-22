@@ -25,6 +25,10 @@ def main_page(request):
 	projects = UserRole.objects.all().filter(user = request.user)
 	return render_to_response('main/main_template.html', {'projects': projects}, context)
 
+@login_required()
+def project(request, id="0"):
+	return
+
 def user_login(request):
 	"""Represents a user login page."""
 	context = RequestContext(request)
