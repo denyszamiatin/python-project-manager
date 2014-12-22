@@ -30,8 +30,8 @@
                 </a>
                 <div id="navbar" class="navbar-collapse collapse pull-left">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="main">{% trans "Home" %}</a></li>
-                        <li class="dropdown">
+                        <li><a href="/main">{% trans "Home" %}</a></li>
+                        <li class="active dropdown" >
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">{% trans "Projects" %} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -60,8 +60,12 @@
         {% endfor %}
     {% endif %}
     <div class="row">
-        <h2>{{ project.title }}</h2>
-                {{ project.description }}
+        <div class="project_title">
+            <h2>{{ current_project.title }}</h2>
+        </div>
+        <div class="project_description">
+            {{ current_project.description }}
+        </div>
     </div>
 </div>
 
