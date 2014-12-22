@@ -27,7 +27,9 @@ def main_page(request):
 
 @login_required()
 def project(request, id="0"):
-	return
+ context = RequestContext(request)
+ project = Project.objects.filter(id = id)[0]
+ return render_to_response('project_page/project_page_template.html', {'project': project}, context)
 
 def user_login(request):
 	"""Represents a user login page."""
