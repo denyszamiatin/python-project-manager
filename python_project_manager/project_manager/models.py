@@ -18,3 +18,12 @@ class UserProfile(models.Model):
 	def __unicode__(self):
 		return self.user.username		
 		
+class UserRole(models.Model):
+	"""Class represents user roles in projects."""
+	user = models.ForeignKey(User)
+	project = models.ForeignKey(Project)
+	role = models.CharField(blank=True, max_length=32, default='owner')
+
+	def __unicode__(self):
+		return self.role
+
