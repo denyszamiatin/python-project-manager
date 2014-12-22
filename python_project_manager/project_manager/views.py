@@ -25,6 +25,12 @@ def main_page(request):
 	projects = UserRole.objects.all().filter(user = request.user)
 	return render_to_response('main/main_template.html', {'projects': projects}, context)
 
+@login_required()
+def project(request, id="0"):
+ context = RequestContext(request)
+ project = Project.objects.filter(id = id)[0]
+ return render_to_response('project_page/project_page_template.html', {'project': project}, context)
+
 def user_login(request):
 	"""Represents a user login page."""
 	context = RequestContext(request)
@@ -59,14 +65,6 @@ def user_logout(request):
 	context = RequestContext(request)
 	logout(request)
 	return redirect('/')
-
-@login_required()
-def project_page_open(request):
-	context = RequestContext(request)
-	project = Project.objects.filter(id=request.GET['id'])[0]
-
-	return render_to_response('project_page/project_page_template.html',
-								  {'project': project}, context)
 
 
 @login_required()
