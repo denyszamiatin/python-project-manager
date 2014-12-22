@@ -60,6 +60,14 @@ def user_logout(request):
 	logout(request)
 	return redirect('/')
 
+@login_required()
+def project_page_open(request):
+	context = RequestContext(request)
+	project = Project.objects.filter(id=request.GET['id'])[0]
+
+	return render_to_response('project_page/project_page_template.html',
+								  {'project': project}, context)
+
 
 @login_required()
 def project_create(request):

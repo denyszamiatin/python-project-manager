@@ -40,7 +40,7 @@
                                 </li>
                                 {% for project in projects %}
                                     <li role="presentation"><a
-                                            href="project/{{ project.project.id }}">{{ project.project.title }}</a>
+                                            href="/project_page?id={{ project.project.id }}">{{ project.project.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -60,7 +60,7 @@
         <ul class="list-group">
             {% for project in projects %}
                 <li class="list-group-item"><a
-                        href="project/{{ project.project.id }}">{{ project.project.title }}</a> - {{ project.role }}
+                        href="/project_page?id={{ project.project.id }}">{{ project.project.title }}</a> - {{ project.role }}
                 </li>
             {% endfor %}
         </ul>
