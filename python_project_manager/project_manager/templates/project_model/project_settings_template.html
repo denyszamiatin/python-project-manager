@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load static %}
+
+{% include "layout/header.html" %}
+
+{{ menu }}
+
+{% if messages %}
+    {% for message in messages %}
+        <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+<div class="row">
+        <h2>{{ current_project.title }} settings</h2>
+
+        <ol class="breadcrumb">
+            <li><a href="/main/">Home</a></li>
+            <li><a href="/project/{{ current_project.id }}/">{{ current_project.title }} </a></li>
+            <li class="active">Settings</li>
+        </ol>
+
+        <div class="container">
+            <form class="form-signin span8" id="project_form" method="post" action="/project/{{ current_project.id }}/settings/"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for field in project_form.visible_fields %}
+                    <div>
+                        <div>
+                            {{ field.label_tag }}<br/>
+                            {{ field }}<br/>
+                        </div>
+                        <div>
+                            {% if field.errors %}
+                                <div class="text text-error">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for hidden in project_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                <br/>
+                <input class="btn btn-primary row" type="submit" name="submit" value={% trans "Save changes" %}>
+            </form>
+        </div>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+            <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
+{% include "layout/footer.html" %}
