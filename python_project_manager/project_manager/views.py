@@ -32,6 +32,37 @@ def project(request, id="0"):
  projects = UserRole.objects.all().filter(user = request.user)
  return render_to_response('project_model/project_page_template.html', {'current_project': project, 'projects': projects}, context)
 
+@login_required()
+def project_settings(request, id="0"):
+    context = RequestContext(request)
+    project = Project.objects.filter(id = id)[0]
+    projects = UserRole.objects.all().filter(user = request.user)
+
+    if project.owner != request.user.username:
+        messages.error(request, "You don't have a permission to view this project!")
+
+        return HttpResponseRedirect('/main/')
+
+    if request.method == 'POST':
+        project_form = ProjectForm(data=request.POST)
+        if project_form.is_valid():
+            updated_project = project_form.instance
+            updated_project.id = id
+            updated_project.save()
+
+            messages.info(request, "Project settings updated!")
+            return HttpResponseRedirect('/main/')
+        else:
+            messages.error(request, "Failed to save project settings!")
+    else:
+        project_form = ProjectForm(instance = project)
+
+    return render_to_response('project_model/project_settings_template.html',
+                              {'current_project': project,
+                               'projects': projects,
+                               'project_form': project_form}, context)
+
+
 def user_login(request):
 	"""Represents a user login page."""
 	context = RequestContext(request)
@@ -49,16 +80,16 @@ def user_login(request):
 				return HttpResponseRedirect('/main/')
 			else:
 				messages.error(request, "You are banned!")
-				return render_to_response('login/login_template.html', 
+				return render_to_response('login/login_template.html',
 										 {}, context)
 		else:
-			print "Invalid login details: {0}, {1}".format(username, 
+			print "Invalid login details: {0}, {1}".format(username,
 														   password)
 			messages.error(request, "Invalid login details!")
-			return render_to_response('login/login_template.html', 
+			return render_to_response('login/login_template.html',
 									 {}, context)
 	else:
-		return render_to_response('login/login_template.html', 
+		return render_to_response('login/login_template.html',
 								  {}, context)
 
 @login_required()
@@ -87,12 +118,12 @@ def project_create(request):
 			return HttpResponseRedirect('/main/')
 		else:
 			messages.error(request, "Failed to create a project!")
-		
+
 	else:
 		project_form = ProjectForm()
-	
-	return render_to_response('project_model/project_template.html', 
-							 {'project_form': project_form}, context); 
+
+	return render_to_response('project_model/project_template.html',
+							 {'project_form': project_form}, context);
 
 def register(request):
 	"""Represents a page for user registration."""
@@ -103,11 +134,11 @@ def register(request):
 		profile_form = UserProfileForm(data=request.POST)
 
 		if user_form.is_valid() and profile_form.is_valid():
-		
+
 			user = user_form.save()
 			user.set_password(user_form.cleaned_data["password1"])
 			user.save()
-			
+
 			profile = profile_form.save(commit=False)
 			profile.user = user
 
@@ -128,4 +159,4 @@ def register(request):
 	return render_to_response(
 			'registration/registration_template.html',
 			{'user_form': user_form, 'profile_form': profile_form},
-			context)	
+			context)
