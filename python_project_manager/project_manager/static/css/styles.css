@@ -3,3 +3,10 @@
     margin-left: 10px;
 }
 
+.form-editrole {
+    display: inline;
+}
+
+.user-name {
+    font-weight: bold;
+}
