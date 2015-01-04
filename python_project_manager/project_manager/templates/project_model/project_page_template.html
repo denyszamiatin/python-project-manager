@@ -3,17 +3,33 @@
 {{ menu }}
 
 {% if messages %}
-    {% for message in messages %}
-        <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
-    {% endfor %}
+  {% for message in messages %}
+    <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+  {% endfor %}
 {% endif %}
 <div class="row">
+  <div class="project-info">
     <div class="project_title">
-        <h2>{{ current_project.title }}</h2>
+      <h2>{{ current_project.title }}</h2>
     </div>
     <div class="project_description">
-        {{ current_project.description }}
+      {{ current_project.description }}
     </div>
+  </div>
+  <div>
+    <table data-toggle="table" class="table">
+      <tr>
+        {% for group in groups %}
+
+          <th>{{ group }}</th>
+
+        {% endfor %}
+      </tr>
+
+    </table>
+
+  </div>
+
 </div>
 
 

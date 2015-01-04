@@ -3,13 +3,11 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response, redirect
-from django.template.loader import get_template
 from django.template import Context, RequestContext, loader
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib import messages
 
-from project_manager.models import Project, User, UserProfile, UserRole
+from project_manager.models import *
 from project_manager.forms import *
 from includes.common import *
 from django.utils.translation import ugettext as _
@@ -36,9 +34,10 @@ def project(request, project_id="0"):
 	context = RequestContext(request)
 	project = Project.objects.filter(id=project_id)[0]
 	projects = UserRole.objects.all().filter(user=request.user)
+	groups = TaskGroup.objects.filter(project=project)
 	menu = pm_menu('project', request, {'project': project})
 	return render_to_response('project_model/project_page_template.html',
-							  {'current_project': project, 'projects': projects, 'menu': menu}, context)
+							  {'current_project': project, 'projects': projects, 'menu': menu, 'groups': groups}, context)
 
 
 def user_login(request):
@@ -92,6 +91,12 @@ def project_create(request):
 
 			user_role = UserRole(user=request.user, role='owner', project=project)
 			user_role.save()
+
+			group = TaskGroup()
+			group.name = _('Basic')
+			group.roles = 'owner'
+			group.project = project
+			group.save()
 
 			messages.info(request, "Project created!")
 			return HttpResponseRedirect('/main/')
