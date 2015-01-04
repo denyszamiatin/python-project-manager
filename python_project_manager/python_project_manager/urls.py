@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 	url(r'^main/$', 'project_manager.views.main_page'),
 	url(r'^project/(?P<project_id>\d+)/$', 'project_manager.views.project'),
 	url(r'^project/(?P<project_id>\d+)/add-user$', 'project_manager.views.add_user_to_project'),
+	url(r'^project/(?P<project_id>\d+)/add-task$', 'project_manager.views.add_task_to_project'),
 )
 
 if settings.DEBUG:

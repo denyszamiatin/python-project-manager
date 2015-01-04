@@ -1,3 +1,4 @@
+{% load i18n %}
 {% include "layout/header.html" %}
 
 {{ menu }}
@@ -20,17 +21,20 @@
     <table data-toggle="table" class="table">
       <tr>
         {% for group in groups %}
-
-          <th>{{ group }}</th>
-
+          <td  class="group">
+            <table data-toggle="table">
+              <tr>
+                <th>{{ group }} <a href="/project/{{ current_project.id }}/add-task" class="add-task">{% trans 'Add task' %}</a></th>
+              </tr>
+              <tr>
+                <td class="add-task-form"></td>
+              </tr>
+            </table>
+          </td>
         {% endfor %}
       </tr>
-
     </table>
-
   </div>
-
 </div>
-
 
 {% include "layout/footer.html" %}

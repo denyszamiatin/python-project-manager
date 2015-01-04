@@ -46,6 +46,6 @@ class Task(models.Model):
 	priority = models.IntegerField(default=0)
 
 	def __unicode__(self):
-		return self.task_Name
+		return self.name
 """ ] """
 

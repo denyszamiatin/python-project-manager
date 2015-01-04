@@ -170,7 +170,7 @@ def add_user_to_project(request, project_id="0"):
 		else:
 			role_to_update.role = value
 			role_to_update.save()
-		role_names = {'none': _('None'), 'owner': _('Owner'), 'admin': _('Administrator'), 'performer': _('Performer')}
+		role_names = {'none': _('None'), 'owner': _('Owner'), 'admin': _('Administrator'), 'developer': _('Developer')}
 		response_data = {'user_id': role_to_update.user.id, 'role': role_to_update.role, 'role_names': role_names}
 
 		return HttpResponse(
@@ -184,14 +184,33 @@ def add_user_to_project(request, project_id="0"):
 			('none', _('None')),
 			('owner', _('Owner')),
 			('admin', _('Administrator')),
-			('performer', _('Performer')),
+			('developer', _('Developer')),
 		]
 		data = []
 		for user in users:
 			user_role = UserRole.objects.filter(user=user, project_id=project_id)
+			if user_role.count() > 0:
+				role = user_role[0]
+			else:
+				role = _('None')
 			data.append({
 				'user': user,
-				'role': user_role[0],
+				'role': role,
 				'form': EditRoleForm({'choices': roles})
 			})
 		return render_to_response('project_model/users.html', {'data': data}, context)
+
+def add_task_to_project(request, project_id=0):
+	"""Returns rendered 'add task form'"""
+	if request.method == 'POST':
+		print 1
+	else:
+		developers = UserRole.objects.filter(role='developer', project_id=project_id)
+		choices = []
+		for developer in developers:
+			choices.append(('developer_' + str(developer.user.id), developer.user.username))
+		task_form = AddTaskForm({'choices': choices})
+		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form})
+
+		return HttpResponse(rendered_form, content_type='text/html')
+	return

@@ -1,4 +1,4 @@
-from project_manager.models import UserProfile, Project
+from project_manager.models import *
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django import forms
@@ -53,3 +53,16 @@ class EditRoleForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		super(EditRoleForm, self).__init__(*args, **kwargs)
 		self.fields['user_role'] = forms.ChoiceField(choices=args[0]['choices'], widget=forms.Select(attrs={'class': 'role-selection'}))
+
+class AddTaskForm(forms.Form):
+	name = forms.CharField(label=_('Title'))
+	description = forms.CharField(widget=forms.Textarea, label=_('Description'))
+	#developer = models.CharField(max_length=50)
+	priority = forms.IntegerField(initial=0)
+
+	def __init__(self,*args, **kwargs):
+		super(AddTaskForm, self).__init__(*args, **kwargs)
+		self.fields['developer'] = forms.ChoiceField(choices=args[0]['choices'])
+
+	class Meta:
+		model= Task

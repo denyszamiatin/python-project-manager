@@ -1,0 +1,6 @@
+{% load i18n %}
+
+<form action="project/1/add-task" method="post">
+  {% csrf_token %}
+  {{ form }}
+</form>

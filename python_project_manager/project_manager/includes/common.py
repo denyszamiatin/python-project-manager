@@ -5,8 +5,6 @@ from project_manager.models import Project, UserRole
 import inspect
 
 def pm_render(*args, **kwargs):
-	t = loader.get_template('test.html')
-	c = Context({})
 	rendered = loader.render_to_string(*args, **kwargs)
 	return rendered
 
