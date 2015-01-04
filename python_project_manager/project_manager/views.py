@@ -13,7 +13,6 @@ from project_manager.models import Project, User, UserProfile, UserRole
 from project_manager.forms import *
 from includes.common import *
 from django.utils.translation import ugettext as _
-from django.contrib.messages import get_messages
 
 @login_required()
 def home(request):
