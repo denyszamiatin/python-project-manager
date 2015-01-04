@@ -37,31 +37,20 @@ class TaskGroup(models.Model):
 		return self.name
 
 """ [ Task 16 """
-class TaskName(models.Model):
-	task_Name = models.CharField(max_length=50)
+class Task(models.Model):
+	"""Class represents tasks model"""
+	"""Назва задачі"""
+	name = models.CharField(max_length=50)
+	"""Опис задачі"""
+	description = models.CharField(max_length=1000)
+	"""Користувач, який створив задачу"""
+	employer = models.CharField(max_length=50)
+	"""Користувач, який виконуватиме задачу"""
+	developer = models.CharField(max_length=50)
+	"""Пріоритет задачі"""
+	priority = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.task_Name
-
-class TaskDescription(models.Model):
-	task_Description = models.CharField(max_length=1000)
-
-	def __unicode__(self):
-		return self.task_Description
-
-class Employer(models.Model):
-	employer = models.CharField(max_length=50)
-
-	def __unicode__(self):
-		return self.employer
-
-class Developer(models.Model):
-	Developer = models.CharField(max_length=50)
-
-	def __unicode__(self):
-		return self.Developer
-
-class TaskPriority(models.Model):
-	task_Priority = models.IntegerField(default=0)
 """ ] """
 
