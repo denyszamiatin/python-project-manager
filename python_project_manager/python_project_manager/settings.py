@@ -81,11 +81,11 @@ DATABASES = {
 		'PASSWORD': 'root',
 		#'HOST': ,
 		#'PORT': ,
-    },
-	'reserve': {
-		'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-	}
+    }
+#	'reserve': {
+#		'ENGINE': 'django.db.backends.mysql',
+#        'NAME': os.path.join(BASE_DIR, 'python_project_manager.mysql'),
+#	}
 }
 
 # Internationalization

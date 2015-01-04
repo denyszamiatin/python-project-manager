@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 
-from project_manager.models import Project, User, UserProfile, UserRole
+from project_manager.models import Project, UserProfile, UserRole
 from project_manager.forms import ProjectForm, UserForm, UserProfileForm
 
 @login_required()
