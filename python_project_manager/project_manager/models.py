@@ -16,13 +16,13 @@ class UserProfile(models.Model):
 	picture = models.ImageField(upload_to='profile_images', blank=True)
 
 	def __unicode__(self):
-		return self.user.username		
-		
+		return self.user.username
+
 class UserRole(models.Model):
 	"""Class represents user roles in projects."""
 	user = models.ForeignKey(User)
 	project = models.ForeignKey(Project)
-	role = models.CharField(blank=True, max_length=32, default='owner')
+	role = models.CharField(max_length=200)
 
 	def __unicode__(self):
 		return self.role

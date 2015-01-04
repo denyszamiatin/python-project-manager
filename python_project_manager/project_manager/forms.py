@@ -2,6 +2,7 @@ from project_manager.models import UserProfile, Project
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django import forms
+from django.db import models
 from django.utils.translation import ugettext as _
 
 class UserForm(forms.ModelForm):
@@ -47,3 +48,8 @@ class ProjectForm(forms.ModelForm):
 	class Meta:
 		model = Project
 		fields = ('title', 'description', 'owner')
+
+class EditRoleForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+		super(EditRoleForm, self).__init__(*args, **kwargs)
+		self.fields['user_role'] = forms.ChoiceField(choices=args[0]['choices'], widget=forms.Select(attrs={'class': 'role-selection'}))
