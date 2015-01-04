@@ -22,8 +22,17 @@ class UserRole(models.Model):
 	"""Class represents user roles in projects."""
 	user = models.ForeignKey(User)
 	project = models.ForeignKey(Project)
-	role = models.CharField(max_length=200)
+	role = models.CharField(max_length=32)
 
 	def __unicode__(self):
 		return self.role
+
+class TaskGroup(models.Model):
+	"""Represents groups of tasks"""
+	name = models.CharField(max_length=200)
+	roles = models.CharField(max_length=200)
+	project = models.ForeignKey(Project)
+
+	def __unicode__(self):
+		return self.name
 
