@@ -10,6 +10,10 @@ from django.utils.translation import ugettext as _
 from project_manager.forms import *
 from includes.common import *
 
+from django.shortcuts import render
+from django_ajax.decorators import ajax
+from project_manager.models import TaskGroup
+
 
 @login_required()
 def home(request):
@@ -121,6 +125,10 @@ def project_create(request):
 			user_role = UserRole(user=request.user, role='owner', project=project)
 			user_role.save()
 
+
+			default_task_group = TaskGroup(name='Default group', project=project)
+			default_task_group.save()
+
 			messages.info(request, "Project created!")
 			return HttpResponseRedirect('/main/')
 		else:
@@ -218,3 +226,12 @@ def add_user_to_project(request, project_id="0"):
 				'form': EditRoleForm({'choices': roles})
 			})
 		return render_to_response('project_model/users.html', {'data': data}, context)
+
+
+@ajax
+def get_task_groups(request, id="0"):
+    task_groups = TaskGroup.objects.filter(project = id)
+
+    return render(request, 'partials/task_group_template.html', {
+        'task_groups' : task_groups
+    })

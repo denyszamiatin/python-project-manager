@@ -12,8 +12,23 @@
         <h2>{{ current_project.title }}</h2>
     </div>
     <div class="project_description">
-        {{ current_project.description }}
+        <p>{{ current_project.description }}</p>
     </div>
+</div>
+<div class="row">
+   <script type="text/javascript">
+        ajaxGet('/project/{{ current_project.id }}/get_task_groups/', function(content){
+            $('#task-group-placeholder').html(content);
+            $(".task-group-sortable").sortable({
+                containerSelector: 'table',
+                itemPath: '> tbody',
+                itemSelector: 'tr',
+                placeholder: '<tr class="placeholder"/>'
+            })
+        })
+    </script>
+
+    <div id="task-group-placeholder"/>
 </div>
 
 
