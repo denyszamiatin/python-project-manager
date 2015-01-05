@@ -17,9 +17,9 @@
             <thead>
                 <tr><th>Priority</th><th>Title</th><th>Created</th><th>Implemented</th></tr>
             </thead>
-            <tbody>
+            <tbody data-group-id="{{ task_group.id }}">
                 {% for task in task_group.tasks.all %}
-                    <tr>
+                    <tr data-id="{{ task.id }}">
                         <td>{{ task.priority }}</td>
                         <td>{{ task.name }}</td>
                         <td>{{ task.employer }}</td>

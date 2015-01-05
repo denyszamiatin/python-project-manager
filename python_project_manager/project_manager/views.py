@@ -12,7 +12,7 @@ from includes.common import *
 
 from django.shortcuts import render
 from django_ajax.decorators import ajax
-from project_manager.models import TaskGroup
+from project_manager.models import TaskGroup, Task
 
 
 @login_required()
@@ -235,3 +235,16 @@ def get_task_groups(request, id="0"):
     return render(request, 'partials/task_group_template.html', {
         'task_groups' : task_groups
     })
+
+
+@ajax
+def change_task_group_priorities(request, id="0"):
+    priority = 1
+
+    for prioritized_id in request.POST.getlist('priorities[]'):
+        task = Task.objects.filter(id=prioritized_id).first()
+        task.priority = priority
+        priority += 1
+
+        task.save()
+

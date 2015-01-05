@@ -23,7 +23,19 @@
                 containerSelector: 'table',
                 itemPath: '> tbody',
                 itemSelector: 'tr',
-                placeholder: '<tr class="placeholder"/>'
+                placeholder: '<tr class="placeholder"/>',
+                onDrop: function ($item, container, _super, event) {
+                    $item.removeClass("dragged").removeAttr("style");
+                    $("body").removeClass("dragging");
+
+                    var priorities = [];
+
+                    $($item).parent().children().each(function(i, task){
+                        priorities.push($(task).data('id'))
+                    });
+
+                    ajaxPost('/change_task_group_priorities/' + $($item).parent().data('group-id') + '/', {priorities: priorities});
+                }
             })
         })
     </script>
