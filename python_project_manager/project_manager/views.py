@@ -230,7 +230,7 @@ def add_user_to_project(request, project_id="0"):
 
 @ajax
 def get_task_groups(request, id="0"):
-    task_groups = TaskGroup.objects.filter(project = id)
+    task_groups = TaskGroup.objects.filter(project = id).prefetch_related('tasks')
 
     return render(request, 'partials/task_group_template.html', {
         'task_groups' : task_groups

@@ -44,7 +44,7 @@ class Task(models.Model):
 	employer = models.CharField(max_length=50)
 	developer = models.CharField(max_length=50)
 	priority = models.IntegerField(default=0)
-	group = models.ForeignKey(TaskGroup)
+	group = models.ForeignKey(TaskGroup, related_name='tasks')
 
 	def __unicode__(self):
 		return self.task_Name

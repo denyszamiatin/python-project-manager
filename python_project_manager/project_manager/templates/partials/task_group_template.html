@@ -18,27 +18,14 @@
                 <tr><th>Priority</th><th>Title</th><th>Created</th><th>Implemented</th></tr>
             </thead>
             <tbody>
-                <tr><td>1</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>2</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>3</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>4</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>5</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>6</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>1</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>2</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>3</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>4</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>5</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>6</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>5</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>6</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>1</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>2</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>3</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>4</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>5</td><td>Implement task</td><td>owner</td><td></td></tr>
-                <tr><td>6</td><td>Implement task</td><td>owner</td><td></td></tr>
-
+                {% for task in task_group.tasks.all %}
+                    <tr>
+                        <td>{{ task.priority }}</td>
+                        <td>{{ task.name }}</td>
+                        <td>{{ task.employer }}</td>
+                        <td>{{ task.developer }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

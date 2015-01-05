@@ -77,9 +77,9 @@ AUTH_PROFILE_MODULE = 'project_manager.UserProfile'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'python_project_manager',
-		'USER': 'root',
-		'PASSWORD': '1111',
+		'NAME': 'guest_db',
+		'USER': 'guest',
+		'PASSWORD': '',
 		#'HOST': ,
 		#'PORT': ,
     }
