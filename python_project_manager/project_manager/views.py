@@ -101,9 +101,10 @@ def user_login(request):
 
 @login_required()
 def user_logout(request):
+	"""A view for user logout."""
 	context = RequestContext(request)
 	logout(request)
-	return redirect('/')
+	return HttpResponseRedirect('/login/')
 
 
 @login_required()
