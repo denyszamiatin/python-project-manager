@@ -41,8 +41,8 @@ class Task(models.Model):
 	"""Class represents tasks model"""
 	name = models.CharField(max_length=50)
 	description = models.CharField(max_length=1000)
-	employer = models.CharField(max_length=50)
-	developer = models.CharField(max_length=50, blank=True)
+	employer = models.ForeignKey(User, related_name='employer')
+	developer = models.ForeignKey(User, related_name='developer')
 	priority = models.IntegerField(default=0)
 
 	def __unicode__(self):

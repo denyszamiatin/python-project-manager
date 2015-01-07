@@ -55,8 +55,9 @@
               success: function(data, success) {
                 if (data.success) {
                   $(that).find('input[type="submit"]').removeClass('disabled');
-                  $(that).parents('.add-task-form').parent().parent().append('<tr><td>' + data.task + '</td></tr>');
-                  //$(that).parents('.modal').remove();
+                  $('.group tbody').append('<tr><td>' + data.task + '</td></tr>');
+                  //$(that).parents('.add-task-form').parent().parent().append('<tr><td>' + data.task + '</td></tr>');
+                  $(that).parents('.modal').remove();
                 }
                 else {
                   var errors = JSON.parse(data.errors);

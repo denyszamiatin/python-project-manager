@@ -215,13 +215,15 @@ def add_task_to_project(request, project_id=0):
 			task = Task()
 			task.description = request.POST.get('description')
 			task.name = request.POST.get('name')
-			#task.employer = request.user
+			task.employer = request.user
 			task.priority = request.POST.get('priority')
+
+			if request.POST.get('developer'):
+				developer_id = request.POST.get('developer').split('_', 1)[1]
+				developer = User.objects.get(id=developer_id)
+				task.developer = developer
 			task.save()
 			rendered_task = pm_render('partials/task/task-thumbnail.html', {'task': task})
-			if request.POST.get('developer'):
-				task.developer = request.POST.get('developer')
-
 			return HttpResponse(json.dumps({'success': True, 'task': rendered_task}), content_type='application/json')
 		else:
 			return HttpResponse(json.dumps({'success': False, 'errors': json.dumps(add_task_form.errors)}), content_type='application/json')
