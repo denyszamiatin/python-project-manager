@@ -55,14 +55,17 @@ class EditRoleForm(forms.Form):
 		self.fields['user_role'] = forms.ChoiceField(choices=args[0]['choices'], widget=forms.Select(attrs={'class': 'role-selection'}))
 
 class AddTaskForm(forms.Form):
-	name = forms.CharField(label=_('Title'))
-	description = forms.CharField(widget=forms.Textarea, label=_('Description'))
-	#developer = models.CharField(max_length=50)
-	priority = forms.IntegerField(initial=0)
+	name = forms.CharField(label=_('Title'), widget=forms.TextInput(attrs={'class': 'form-control'}))
+	description = forms.CharField(label=_('Description'), widget=forms.Textarea(attrs={'class': 'form-control'}))
+	priority = forms.IntegerField(initial=0, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
-	def __init__(self,*args, **kwargs):
+	def __init__(self, *args, **kwargs):
 		super(AddTaskForm, self).__init__(*args, **kwargs)
-		self.fields['developer'] = forms.ChoiceField(choices=args[0]['choices'])
+		#self.fields['name'].css_classes('form-control')
+		if len(args) > 0:
+			self.fields['developer'] = forms.ChoiceField(choices=args[0]['choices'])
+			self.fields['developer'].required = False
+			self.fields['developer'].empty_label = _("(choose from the list)")
 
 	class Meta:
 		model= Task

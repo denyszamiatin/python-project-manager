@@ -11,6 +11,8 @@ from project_manager.models import *
 from project_manager.forms import *
 from includes.common import *
 from django.utils.translation import ugettext as _
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 @login_required()
 def home(request):
@@ -35,9 +37,10 @@ def project(request, project_id="0"):
 	project = Project.objects.filter(id=project_id)[0]
 	projects = UserRole.objects.all().filter(user=request.user)
 	groups = TaskGroup.objects.filter(project=project)
+	tasks = Task.objects.all().order_by('-priority')
 	menu = pm_menu('project', request, {'project': project})
 	return render_to_response('project_model/project_page_template.html',
-							  {'current_project': project, 'projects': projects, 'menu': menu, 'groups': groups}, context)
+							  {'current_project': project, 'projects': projects, 'menu': menu, 'groups': groups, 'tasks': tasks}, context)
 
 
 def user_login(request):
@@ -147,6 +150,7 @@ def register(request):
 		context)
 
 
+@login_required()
 def add_user_to_project(request, project_id="0"):
 	"""Represents a page for project member administration."""
 	if request.method == 'POST':
@@ -200,17 +204,34 @@ def add_user_to_project(request, project_id="0"):
 			})
 		return render_to_response('project_model/users.html', {'data': data}, context)
 
+
+@login_required()
 def add_task_to_project(request, project_id=0):
 	"""Returns rendered 'add task form'"""
+	context = RequestContext(request)
 	if request.method == 'POST':
-		print 1
+		add_task_form = AddTaskForm(data=request.POST)
+		if add_task_form.is_valid():
+			task = Task()
+			task.description = request.POST.get('description')
+			task.name = request.POST.get('name')
+			#task.employer = request.user
+			task.priority = request.POST.get('priority')
+			task.save()
+			rendered_task = pm_render('partials/task/task-thumbnail.html', {'task': task})
+			if request.POST.get('developer'):
+				task.developer = request.POST.get('developer')
+
+			return HttpResponse(json.dumps({'success': True, 'task': rendered_task}), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'success': False, 'errors': json.dumps(add_task_form.errors)}), content_type='application/json')
+
 	else:
 		developers = UserRole.objects.filter(role='developer', project_id=project_id)
-		choices = []
+		choices = [('', _('None'))]
 		for developer in developers:
 			choices.append(('developer_' + str(developer.user.id), developer.user.username))
 		task_form = AddTaskForm({'choices': choices})
-		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form})
+		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form},context)
 
 		return HttpResponse(rendered_form, content_type='text/html')
-	return

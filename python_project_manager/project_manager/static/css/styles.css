@@ -10,3 +10,30 @@
 .user-name {
     font-weight: bold;
 }
+
+textarea {
+    resize: vertical;
+}
+
+.groups {
+    width: auto
+}
+
+.group {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.group table{
+    width: 200px !important;
+    border: 1px solid #ddd;
+    border-right: none;
+}
+
+.group table.last {
+    border: 1px solid #ddd;
+}
+
+.table td {
+    width: 200px;
+}

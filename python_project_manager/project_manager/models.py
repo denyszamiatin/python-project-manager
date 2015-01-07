@@ -42,7 +42,7 @@ class Task(models.Model):
 	name = models.CharField(max_length=50)
 	description = models.CharField(max_length=1000)
 	employer = models.CharField(max_length=50)
-	developer = models.CharField(max_length=50)
+	developer = models.CharField(max_length=50, blank=True)
 	priority = models.IntegerField(default=0)
 
 	def __unicode__(self):

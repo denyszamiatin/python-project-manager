@@ -28,23 +28,60 @@
       });
     });
 
-    $('.add-task').click(function(e) {
+    $('.add-task').click(function (e) {
       var that = this;
       e.preventDefault()
       var link = $(this).attr('href');
       $.ajax({
         url: link,
-        success: function(response) {
-          $(that).parents('tr').find('.add-task-form').append(response);
+        success: function (response) {
+          var new_content = $(that).parents('tr').find('.add-task-form').append(response);
+          $('.modal', new_content).modal();
+          $('.modal', new_content).on('hidden.bs.modal', function() {
+            $(this).remove();
+          });
+          $('#add-task-form').on('submit', function (e) {
+            e.preventDefault();
+            var values = {};
+            var that = this;
+            $(this).find('input, select,textarea').each(function(item) {
+              values[$(this).attr('name')] = $(this).val();
+            });
+            $(this).find('input[type="submit"]').addClass('disabled');
+            $.ajax({
+              url: document.location.pathname + 'add-task',
+              type: 'POST',
+              data: values,
+              success: function(data, success) {
+                if (data.success) {
+                  $(that).find('input[type="submit"]').removeClass('disabled');
+                  $(that).parents('.add-task-form').parent().parent().append('<tr><td>' + data.task + '</td></tr>');
+                  //$(that).parents('.modal').remove();
+                }
+                else {
+                  var errors = JSON.parse(data.errors);
+                  for (var error in errors) {
+                    $(that).find('.' + error).append('<div class="alert alert-danger">' + errors[error] + '</div>');
+                  }
+                  $(that).find('input[type="submit"]').removeClass('disabled');
+                }
+              }
+            });
+
+          });
           //$('.add-task-form', $(that)).append(response);
         },
-         error: function (xhr, errmsg, err) {
+        error: function (xhr, errmsg, err) {
           $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
             " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       })
     });
+
+    //$('#add-task-form').live(function() {
+
+    //});
 
     // This function gets cookie with a given name
     function getCookie(name) {
@@ -98,7 +135,6 @@
         }
       }
     });
-
   })
 
 

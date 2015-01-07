@@ -21,14 +21,19 @@
     <table data-toggle="table" class="table">
       <tr>
         {% for group in groups %}
-          <td  class="group">
-            <table data-toggle="table">
+          <td  class="group group-{{ group.id }}">
+            <table data-toggle="table" class="table">
               <tr>
                 <th>{{ group }} <a href="/project/{{ current_project.id }}/add-task" class="add-task">{% trans 'Add task' %}</a></th>
               </tr>
               <tr>
                 <td class="add-task-form"></td>
               </tr>
+              {% for task in tasks %}
+                <tr>
+                  <td>{{ task.name }}</td>
+                </tr>
+              {% endfor %}
             </table>
           </td>
         {% endfor %}
