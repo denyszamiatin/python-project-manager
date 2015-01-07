@@ -38,7 +38,8 @@ def pm_project_menu(request='', args={}):
 	items.append({
 		'title':_('Settings'),
 		'href': '#',
-		'sub_menu': [{'title': _('Add user to project'), 'href': '/project/' + str(current_project.id) + '/add-user'}]
+		'sub_menu': [{'title': _('Add user to project'), 'href': '/project/' + str(current_project.id) + '/add-user'},
+                     {'title': _('Change settings'), 'href': '/project/' + str(current_project.id) + '/settings'}]
 	})
 	return items
 

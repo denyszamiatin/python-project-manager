@@ -1,18 +1,15 @@
-import os.path, sys
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, render_to_response, redirect
-from django.template.loader import get_template
-from django.template import Context, RequestContext, loader
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib import messages
+from django.utils.translation import ugettext as _
 
-from project_manager.models import Project, User, UserProfile, UserRole
 from project_manager.forms import *
 from includes.common import *
-from django.utils.translation import ugettext as _
+
 
 @login_required()
 def home(request):
@@ -39,6 +36,37 @@ def project(request, project_id="0"):
 	menu = pm_menu('project', request, {'project': project})
 	return render_to_response('project_model/project_page_template.html',
 							  {'current_project': project, 'projects': projects, 'menu': menu}, context)
+
+
+@login_required()
+def project_settings(request, id="0"):
+    context = RequestContext(request)
+    project = Project.objects.filter(id = id)[0]
+    projects = UserRole.objects.all().filter(user = request.user)
+
+    if project.owner != request.user.username:
+        messages.error(request, "You don't have a permission to view this project!")
+
+        return HttpResponseRedirect('/main/')
+
+    if request.method == 'POST':
+        project_form = ProjectForm(data=request.POST)
+        if project_form.is_valid():
+            updated_project = project_form.instance
+            updated_project.id = id
+            updated_project.save()
+
+            messages.info(request, "Project settings updated!")
+            return HttpResponseRedirect('/main/')
+        else:
+            messages.error(request, "Failed to save project settings!")
+    else:
+        project_form = ProjectForm(instance = project)
+
+    return render_to_response('project_model/project_settings_template.html',
+                              {'current_project': project,
+                               'projects': projects,
+                               'project_form': project_form}, context)
 
 
 def user_login(request):
@@ -73,9 +101,10 @@ def user_login(request):
 
 @login_required()
 def user_logout(request):
+	"""A view for user logout."""
 	context = RequestContext(request)
 	logout(request)
-	return redirect('/')
+	return HttpResponseRedirect('/login/')
 
 
 @login_required()
@@ -183,10 +212,10 @@ def add_user_to_project(request, project_id="0"):
 		]
 		data = []
 		for user in users:
-			user_role = UserRole.objects.filter(user=user, project_id=project_id)
+			user_role = UserRole.objects.filter(user=user, project_id=project_id).first()
 			data.append({
 				'user': user,
-				'role': user_role[0],
+				'role': user_role,
 				'form': EditRoleForm({'choices': roles})
 			})
 		return render_to_response('project_model/users.html', {'data': data}, context)
