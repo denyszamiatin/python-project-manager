@@ -22,10 +22,8 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">
-					
-					
-                    <img src="{% if user.userprofile.picture %}{{ user.userprofile.picture.url }}{% else %}/media/profile_images/no_avatar.jpg{% endif %}"
-							alt="User Icon" height="20" width="20" class="pull-left">
+                    <img src="{{ user.userprofile.picture.url }}" alt="User Icon" height="20" width="20"
+                         class="pull-left">
                     <div class="user-name">
                         <small>{% trans "Hello" %},</small>
                         {{ user }}</div>
