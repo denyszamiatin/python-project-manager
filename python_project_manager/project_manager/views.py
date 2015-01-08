@@ -234,6 +234,29 @@ def add_task_to_project(request, project_id=0):
 		for developer in developers:
 			choices.append(('developer_' + str(developer.user.id), developer.user.username))
 		task_form = AddTaskForm({'choices': choices})
-		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form},context)
+		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form, 'project_id': project_id}, context)
+
+		return HttpResponse(rendered_form, content_type='text/html')
+
+
+@login_required()
+def edit_group(request, group_id=0):
+	"""Makes updates to group"""
+	context = RequestContext(request)
+	if request.method == 'POST':
+		edit_group_form = EditGroupForm(data=request.POST)
+		if edit_group_form.is_valid():
+			group = TaskGroup.objects.get(id=group_id)
+			group.name = request.POST.get('name')
+			group.roles = json.dumps(edit_group_form.cleaned_data.get('roles'))
+			group.save()
+			return HttpResponse(json.dumps({'success': True, 'groupName': group.name}), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'success': False}), content_type='application/json')
+
+	else:
+		group = TaskGroup.objects.get(id=group_id)
+		task_form = EditGroupForm(initial={'name': group.name})
+		rendered_form = pm_render('partials/edit_group_form.html', {'form': task_form, 'group_id': group_id}, context)
 
 		return HttpResponse(rendered_form, content_type='text/html')

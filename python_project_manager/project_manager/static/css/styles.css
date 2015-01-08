@@ -47,3 +47,12 @@ textarea {
     width: 100%;
     display: block;
 }
+
+.form-group.roles label {
+    font-weight: normal;
+}
+
+.form-group.roles ul {
+    list-style: none;
+    padding: 0;
+}

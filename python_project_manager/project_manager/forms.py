@@ -61,11 +61,25 @@ class AddTaskForm(forms.Form):
 
 	def __init__(self, *args, **kwargs):
 		super(AddTaskForm, self).__init__(*args, **kwargs)
-		#self.fields['name'].css_classes('form-control')
 		if len(args) > 0:
 			self.fields['developer'] = forms.ChoiceField(choices=args[0]['choices'])
 			self.fields['developer'].required = False
 			self.fields['developer'].empty_label = _("(choose from the list)")
 
 	class Meta:
-		model= Task
+		model = Task
+
+
+class EditGroupForm(forms.Form):
+	name = forms.CharField(label=_('Title'), widget=forms.TextInput(attrs={'class': 'form-control'}))
+	roles = forms.MultipleChoiceField(choices=[
+		('owner', _('Owner')),
+		('admin', _('Administrator')),
+		('developer', _('Developer')),
+	], widget=forms.CheckboxSelectMultiple())
+
+	def __init__(self, *args, **kwargs):
+		super(EditGroupForm, self).__init__(*args, **kwargs)
+
+	class Meta:
+		model= TaskGroup
