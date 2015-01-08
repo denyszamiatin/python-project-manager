@@ -33,7 +33,7 @@
 
                 <div id="navbar" class="navbar-collapse collapse pull-left">
                     <ul class="nav navbar-nav">
-                        <li><a href="/main">{% trans "Home" %}</a></li>
+                        <li><a href="/main/">{% trans "Home" %}</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">{% trans "Projects" %} <span class="caret"></span></a>
@@ -48,7 +48,7 @@
                                 {% endfor %}
                             </ul>
                         </li>
-                        <li class="active dropdown">
+                        <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -57,6 +57,7 @@
                                 </li>
                             </ul>
                         </li>
+						<li><a href="/logout/">{% trans "Log out" %}</a></li>
                     </ul>
                 </div>
             </div>

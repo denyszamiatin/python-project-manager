@@ -15,7 +15,7 @@ def pm_menu(menu_name = '', request = '', args={}):
 		"project" : pm_project_menu
 	}
 	items = menus[menu_name](request, args)
-	output = loader.render_to_string("partials/menu.html", {'menu':items})
+	output = loader.render_to_string("partials/menu.html", {'menu':items, 'user': request.user})
 	return output
 
 def pm_main_menu(request = '', agrs={}):
