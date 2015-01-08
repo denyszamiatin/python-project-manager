@@ -1,4 +1,4 @@
-from project_manager.models import UserProfile, Project
+from project_manager.models import *
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django import forms
@@ -53,3 +53,33 @@ class EditRoleForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		super(EditRoleForm, self).__init__(*args, **kwargs)
 		self.fields['user_role'] = forms.ChoiceField(choices=args[0]['choices'], widget=forms.Select(attrs={'class': 'role-selection'}))
+
+class AddTaskForm(forms.Form):
+	name = forms.CharField(label=_('Title'), widget=forms.TextInput(attrs={'class': 'form-control'}))
+	description = forms.CharField(label=_('Description'), widget=forms.Textarea(attrs={'class': 'form-control'}))
+	priority = forms.IntegerField(initial=0, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
+	def __init__(self, *args, **kwargs):
+		super(AddTaskForm, self).__init__(*args, **kwargs)
+		if len(args) > 0:
+			self.fields['developer'] = forms.ChoiceField(choices=args[0]['choices'])
+			self.fields['developer'].required = False
+			self.fields['developer'].empty_label = _("(choose from the list)")
+
+	class Meta:
+		model = Task
+
+
+class EditGroupForm(forms.Form):
+	name = forms.CharField(label=_('Title'), widget=forms.TextInput(attrs={'class': 'form-control'}))
+	roles = forms.MultipleChoiceField(choices=[
+		('owner', _('Owner')),
+		('admin', _('Administrator')),
+		('developer', _('Developer')),
+	], widget=forms.CheckboxSelectMultiple())
+
+	def __init__(self, *args, **kwargs):
+		super(EditGroupForm, self).__init__(*args, **kwargs)
+
+	class Meta:
+		model= TaskGroup

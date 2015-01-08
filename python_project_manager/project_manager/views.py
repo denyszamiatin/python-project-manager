@@ -1,14 +1,18 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+
+from django.shortcuts import render, render_to_response, redirect
+from django.template import Context, RequestContext, loader
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from django.utils.translation import ugettext as _
 
+from project_manager.models import *
 from project_manager.forms import *
 from includes.common import *
+from django.utils.translation import ugettext as _
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 
 @login_required()
@@ -33,40 +37,42 @@ def project(request, project_id="0"):
 	context = RequestContext(request)
 	project = Project.objects.filter(id=project_id)[0]
 	projects = UserRole.objects.all().filter(user=request.user)
+	groups = TaskGroup.objects.filter(project=project)
+	tasks = Task.objects.all().order_by('-priority')
 	menu = pm_menu('project', request, {'project': project})
 	return render_to_response('project_model/project_page_template.html',
-							  {'current_project': project, 'projects': projects, 'menu': menu}, context)
+							  {'current_project': project, 'projects': projects, 'menu': menu, 'groups': groups, 'tasks': tasks}, context)
 
 
 @login_required()
 def project_settings(request, id="0"):
-    context = RequestContext(request)
-    project = Project.objects.filter(id = id)[0]
-    projects = UserRole.objects.all().filter(user = request.user)
+	context = RequestContext(request)
+	project = Project.objects.filter(id = id)[0]
+	projects = UserRole.objects.all().filter(user = request.user)
 
-    if project.owner != request.user.username:
-        messages.error(request, "You don't have a permission to view this project!")
+	if project.owner != request.user.username:
+		messages.error(request, "You don't have a permission to view this project!")
 
-        return HttpResponseRedirect('/main/')
+		return HttpResponseRedirect('/main/')
 
-    if request.method == 'POST':
-        project_form = ProjectForm(data=request.POST)
-        if project_form.is_valid():
-            updated_project = project_form.instance
-            updated_project.id = id
-            updated_project.save()
+	if request.method == 'POST':
+		project_form = ProjectForm(data=request.POST)
+		if project_form.is_valid():
+			updated_project = project_form.instance
+			updated_project.id = id
+			updated_project.save()
 
-            messages.info(request, "Project settings updated!")
-            return HttpResponseRedirect('/main/')
-        else:
-            messages.error(request, "Failed to save project settings!")
-    else:
-        project_form = ProjectForm(instance = project)
+			messages.info(request, "Project settings updated!")
+			return HttpResponseRedirect('/main/')
+		else:
+			messages.error(request, "Failed to save project settings!")
+	else:
+		project_form = ProjectForm(instance = project)
 
-    return render_to_response('project_model/project_settings_template.html',
-                              {'current_project': project,
-                               'projects': projects,
-                               'project_form': project_form}, context)
+	return render_to_response('project_model/project_settings_template.html',
+							{'current_project': project,
+							'projects': projects,
+							'project_form': project_form}, context)
 
 
 def user_login(request):
@@ -122,6 +128,12 @@ def project_create(request):
 			user_role = UserRole(user=request.user, role='owner', project=project)
 			user_role.save()
 
+			group = TaskGroup()
+			group.name = _('Basic')
+			group.roles = 'owner'
+			group.project = project
+			group.save()
+
 			messages.info(request, "Project created!")
 			return HttpResponseRedirect('/main/')
 		else:
@@ -171,6 +183,7 @@ def register(request):
 		context)
 
 
+@login_required()
 def add_user_to_project(request, project_id="0"):
 	"""Represents a page for project member administration."""
 	if request.method == 'POST':
@@ -194,7 +207,7 @@ def add_user_to_project(request, project_id="0"):
 		else:
 			role_to_update.role = value
 			role_to_update.save()
-		role_names = {'none': _('None'), 'owner': _('Owner'), 'admin': _('Administrator'), 'performer': _('Performer')}
+		role_names = {'none': _('None'), 'owner': _('Owner'), 'admin': _('Administrator'), 'developer': _('Developer')}
 		response_data = {'user_id': role_to_update.user.id, 'role': role_to_update.role, 'role_names': role_names}
 
 		return HttpResponse(
@@ -208,7 +221,7 @@ def add_user_to_project(request, project_id="0"):
 			('none', _('None')),
 			('owner', _('Owner')),
 			('admin', _('Administrator')),
-			('performer', _('Performer')),
+			('developer', _('Developer')),
 		]
 		data = []
 		for user in users:
@@ -219,3 +232,60 @@ def add_user_to_project(request, project_id="0"):
 				'form': EditRoleForm({'choices': roles})
 			})
 		return render_to_response('project_model/users.html', {'data': data}, context)
+
+
+@login_required()
+def add_task_to_project(request, project_id=0):
+	"""Returns rendered 'add task form'"""
+	context = RequestContext(request)
+	if request.method == 'POST':
+		add_task_form = AddTaskForm(data=request.POST)
+		if add_task_form.is_valid():
+			task = Task()
+			task.description = request.POST.get('description')
+			task.name = request.POST.get('name')
+			task.employer = request.user
+			task.priority = request.POST.get('priority')
+
+			if request.POST.get('developer'):
+				developer_id = request.POST.get('developer').split('_', 1)[1]
+				developer = User.objects.get(id=developer_id)
+				task.developer = developer
+			task.save()
+			rendered_task = pm_render('partials/task/task-thumbnail.html', {'task': task})
+			return HttpResponse(json.dumps({'success': True, 'task': rendered_task}), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'success': False, 'errors': json.dumps(add_task_form.errors)}), content_type='application/json')
+
+	else:
+		developers = UserRole.objects.filter(role='developer', project_id=project_id)
+		choices = [('', _('None'))]
+		for developer in developers:
+			choices.append(('developer_' + str(developer.user.id), developer.user.username))
+		task_form = AddTaskForm({'choices': choices})
+		rendered_form = pm_render('partials/add_task_form.html', {'form': task_form, 'project_id': project_id}, context)
+
+		return HttpResponse(rendered_form, content_type='text/html')
+
+
+@login_required()
+def edit_group(request, group_id=0):
+	"""Makes updates to group"""
+	context = RequestContext(request)
+	if request.method == 'POST':
+		edit_group_form = EditGroupForm(data=request.POST)
+		if edit_group_form.is_valid():
+			group = TaskGroup.objects.get(id=group_id)
+			group.name = request.POST.get('name')
+			group.roles = json.dumps(edit_group_form.cleaned_data.get('roles'))
+			group.save()
+			return HttpResponse(json.dumps({'success': True, 'groupName': group.name}), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'success': False}), content_type='application/json')
+
+	else:
+		group = TaskGroup.objects.get(id=group_id)
+		task_form = EditGroupForm(initial={'name': group.name})
+		rendered_form = pm_render('partials/edit_group_form.html', {'form': task_form, 'group_id': group_id}, context)
+
+		return HttpResponse(rendered_form, content_type='text/html')

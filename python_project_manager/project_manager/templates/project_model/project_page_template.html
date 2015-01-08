@@ -1,20 +1,49 @@
+{% load i18n %}
 {% include "layout/header.html" %}
 
 {{ menu }}
 
 {% if messages %}
-    {% for message in messages %}
-        <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
-    {% endfor %}
+  {% for message in messages %}
+    <p {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+  {% endfor %}
 {% endif %}
 <div class="row">
+  <div class="project-info">
     <div class="project_title">
-        <h2>{{ current_project.title }}</h2>
+      <h2>{{ current_project.title }}</h2>
     </div>
     <div class="project_description">
-        {{ current_project.description }}
+      {{ current_project.description }}
     </div>
+  </div>
+  <div>
+    <table data-toggle="table" class="table">
+      <tr>
+        {% for group in groups %}
+          <td  class="group group-{{ group.id }}">
+            <table data-toggle="table" class="table">
+              <tr>
+                <th>
+                  <span class="group-name">{{ group }}</span>
+                  <a href="/project/{{ current_project.id }}/add-task" class="add-task">{% trans 'Add task' %}</a>
+                  <a href="/group/{{ group.id }}/edit" class="edit-group">{% trans 'Edit group' %}</a>
+                </th>
+              </tr>
+              <tr>
+                <td class="add-task-form"></td>
+              </tr>
+              {% for task in tasks %}
+                <tr>
+                  <td>{{ task.name }}</td>
+                </tr>
+              {% endfor %}
+            </table>
+          </td>
+        {% endfor %}
+      </tr>
+    </table>
+  </div>
 </div>
-
 
 {% include "layout/footer.html" %}

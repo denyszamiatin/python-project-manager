@@ -38,17 +38,17 @@ class TaskGroup(models.Model):
 
 class Task(models.Model):
 	"""Class represents tasks model"""
-	"""Назва задачі"""
+
 	name = models.CharField(max_length=50)
-	"""Опис задачі"""
+
 	description = models.CharField(max_length=1000)
-	"""Користувач, який створив задачу"""
-	employer = models.ForeignKey(User)
-	"""Користувач, який виконуватиме задачу"""
-	developer = models.ForeignKey(User)
-	"""Пріоритет задачі"""
+
+	employer = models.ForeignKey(User, related_name='employer')
+	developer = models.ForeignKey(User, related_name='developer')
+
 	priority = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
+
 
