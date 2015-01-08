@@ -281,7 +281,7 @@ def edit_group(request, group_id=0):
 			group.save()
 			return HttpResponse(json.dumps({'success': True, 'groupName': group.name}), content_type='application/json')
 		else:
-			return HttpResponse(json.dumps({'success': False}), content_type='application/json')
+			return HttpResponse(json.dumps({'success': False, 'errors': json.dumps(edit_group_form.errors)}), content_type='application/json')
 
 	else:
 		group = TaskGroup.objects.get(id=group_id)
