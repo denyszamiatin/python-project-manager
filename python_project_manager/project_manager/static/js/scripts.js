@@ -170,7 +170,9 @@
         }
         else {
           var errors = JSON.parse(data.errors);
-          alert(errors);
+          for (var error in errors) {
+            $(that).find('.' + error).append('<div class="alert alert-danger">' + errors[error] + '</div>');
+          }
           $(that).find('input[type="submit"]').removeClass('disabled');
         }
       }
