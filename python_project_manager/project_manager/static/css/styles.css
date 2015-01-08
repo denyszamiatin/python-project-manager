@@ -37,3 +37,22 @@ textarea {
 .table td {
     width: 200px;
 }
+
+.group-name {
+    width: 100%;
+    display: block;
+}
+
+.group .add-task, .group .edit-group {
+    width: 100%;
+    display: block;
+}
+
+.form-group.roles label {
+    font-weight: normal;
+}
+
+.form-group.roles ul {
+    list-style: none;
+    padding: 0;
+}

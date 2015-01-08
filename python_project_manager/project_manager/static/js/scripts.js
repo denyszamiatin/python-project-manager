@@ -28,49 +28,19 @@
       });
     });
 
-    $('.add-task').click(function (e) {
+    $('.add-task, .edit-group').click(function (e) {
       var that = this;
       e.preventDefault()
       var link = $(this).attr('href');
       $.ajax({
         url: link,
         success: function (response) {
-          var new_content = $(that).parents('tr').find('.add-task-form').append(response);
+          var new_content = /*$('.project-info').append(response);//*/$(that).parents('tr').find('.add-task-form').append(response);
           $('.modal', new_content).modal();
-          $('.modal', new_content).on('hidden.bs.modal', function() {
+          $('.modal', new_content).on('hidden.bs.modal', function () {
             $(this).remove();
           });
-          $('#add-task-form').on('submit', function (e) {
-            e.preventDefault();
-            var values = {};
-            var that = this;
-            $(this).find('input, select,textarea').each(function(item) {
-              values[$(this).attr('name')] = $(this).val();
-            });
-            $(this).find('input[type="submit"]').addClass('disabled');
-            $.ajax({
-              url: document.location.pathname + 'add-task',
-              type: 'POST',
-              data: values,
-              success: function(data, success) {
-                if (data.success) {
-                  $(that).find('input[type="submit"]').removeClass('disabled');
-                  $('.group tbody').append('<tr><td>' + data.task + '</td></tr>');
-                  //$(that).parents('.add-task-form').parent().parent().append('<tr><td>' + data.task + '</td></tr>');
-                  $(that).parents('.modal').remove();
-                }
-                else {
-                  var errors = JSON.parse(data.errors);
-                  for (var error in errors) {
-                    $(that).find('.' + error).append('<div class="alert alert-danger">' + errors[error] + '</div>');
-                  }
-                  $(that).find('input[type="submit"]').removeClass('disabled');
-                }
-              }
-            });
-
-          });
-          //$('.add-task-form', $(that)).append(response);
+          $($(new_content).find('form')).on('submit', Form.handlers[$(new_content).find('form').attr('id').replace(/-/g, '_')]);
         },
         error: function (xhr, errmsg, err) {
           $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
@@ -138,5 +108,73 @@
     });
   })
 
+  /**
+   * Form class
+   * @constructor
+   */
+  var Form = function () {};
+  Form.handlers = {};
+
+  /**
+   * Submit handler for add task form
+   */
+  Form.handlers.add_task_form = function (e) {
+    e.preventDefault();
+    var values = {};
+    var that = this;
+    var link = $(this).attr('action');
+    $(this).find(':input').each(function (item) {
+      values[$(this).attr('name')] = $(this).val();
+    });
+    $(this).find('input[type="submit"]').addClass('disabled');
+    $.ajax({
+      url: link,
+      type: 'POST',
+      data: values,
+      success: function (data, success) {
+        if (data.success) {
+          $(that).find('input[type="submit"]').removeClass('disabled');
+          $('.group tbody').append('<tr><td>' + data.task + '</td></tr>');
+          //$(that).parents('.add-task-form').parent().parent().append('<tr><td>' + data.task + '</td></tr>');
+          $(that).parents('.modal').remove();
+        }
+        else {
+          var errors = JSON.parse(data.errors);
+          for (var error in errors) {
+            $(that).find('.' + error).append('<div class="alert alert-danger">' + errors[error] + '</div>');
+          }
+          $(that).find('input[type="submit"]').removeClass('disabled');
+        }
+      }
+    });
+  };
+
+  Form.handlers.edit_group_form = function (e) {
+    e.preventDefault();
+    var values = {}
+      , that = this
+      , link = $(this).attr('action');
+    $(this).find(':input').each(function(item) {
+      values[$(this).attr('name')] = $(this).val();
+    });
+    $(this).find('input[type="submit"]').addClass('disabled');
+    $.ajax({
+      url: link,
+      type: 'POST',
+      data: values,
+      success: function (data, success) {
+        if (data.success) {
+          $('.group-name').html(data.groupName);
+          $(that).find('input[type="submit"]').removeClass('disabled');
+          $(that).parents('.modal').remove();
+        }
+        else {
+          var errors = JSON.parse(data.errors);
+          alert(errors);
+          $(that).find('input[type="submit"]').removeClass('disabled');
+        }
+      }
+    });
+  }
 
 })(jQuery)

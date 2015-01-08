@@ -24,7 +24,11 @@
           <td  class="group group-{{ group.id }}">
             <table data-toggle="table" class="table">
               <tr>
-                <th>{{ group }} <a href="/project/{{ current_project.id }}/add-task" class="add-task">{% trans 'Add task' %}</a></th>
+                <th>
+                  <span class="group-name">{{ group }}</span>
+                  <a href="/project/{{ current_project.id }}/add-task" class="add-task">{% trans 'Add task' %}</a>
+                  <a href="/group/{{ group.id }}/edit" class="edit-group">{% trans 'Edit group' %}</a>
+                </th>
               </tr>
               <tr>
                 <td class="add-task-form"></td>
