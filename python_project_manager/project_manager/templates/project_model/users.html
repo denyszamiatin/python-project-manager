@@ -74,17 +74,15 @@
                 {% for item in data %}
                     <li class="list-group-item">
                       <div class="user-info user-{{ item.user.id}}">
-                        <span class="user-name">{{ item.user.first_name }} {{ item.user.last_name }} - {{ item.user.username }}</span><br />
+                        <span class="user-name">{{ item.user.first_name }} {{ item.user.last_name }} - {{ item.user.username }}</span>
                         <span class="user-role">{% trans 'User role' %}: {{ item.role }}</span>
-                      </div>
-
-
-                        <form class="form-editrole" id="project_form_{{ item.user.id }}" method="post"
+						<form class="form-editrole" style="float: right;" id="project_form_{{ item.user.id }}" method="post"
                               action="/new_project/"
                               enctype="multipart/form-data">
                             {% csrf_token %}
                             {{ item.form.user_role }}
                         </form>
+                      </div>
                     </li>
                 {% endfor %}
             </ul>

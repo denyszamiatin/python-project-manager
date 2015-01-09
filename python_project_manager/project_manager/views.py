@@ -216,7 +216,7 @@ def add_user_to_project(request, project_id="0"):
         )
 	else:
 		context = RequestContext(request)
-		users = User.objects.all()
+		users = User.objects.all().order_by('username')
 		roles = [
 			('none', _('None')),
 			('owner', _('Owner')),
